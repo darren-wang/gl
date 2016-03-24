@@ -31,15 +31,18 @@ LOG = logging.getLogger(__name__)
 CONF = cfg.CONF
 
 DEFAULT_RULES = policy.Rules.from_dict({
-    'context_is_admin': 'role:admin',
-    'default': '@',
-    'manage_image_cache': 'role:admin',
+    'glanec':{
+        'context_is_admin': 'role:project_admin',
+        'default': '@',
+        'manage_image_cache': 'role:project_admin',
+    }
 })
 
 _ = i18n._
 _LI = i18n._LI
 _LW = i18n._LW
 
+policy.Enforcer(CONF)
 
 class Enforcer(policy.Enforcer):
     """Responsible for loading and enforcing rules"""

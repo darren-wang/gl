@@ -181,7 +181,7 @@ CONF.register_opts(paste_deploy_opts, group='paste_deploy')
 CONF.register_opts(image_format_opts, group='image_format')
 CONF.register_opts(task_opts, group='task')
 CONF.register_opts(common_opts)
-policy.Enforcer(CONF)
+#policy.Enforcer(CONF)
 
 
 def parse_args(args=None, usage=None, default_config_files=None):
@@ -262,9 +262,11 @@ def load_paste_app(app_name, flavor=None, conf_file=None):
 
     try:
         logger = logging.getLogger(__name__)
+        logger.debug('APP NAME IS HERE\n')
+        logger.debug(app_name)
         logger.debug("Loading %(app_name)s from %(conf_file)s",
                      {'conf_file': conf_file, 'app_name': app_name})
-
+        
         app = deploy.loadapp("config:%s" % conf_file, name=app_name)
 
         # Log the options used when starting if we're in debug mode...
