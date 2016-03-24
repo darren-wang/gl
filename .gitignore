@@ -18,6 +18,7 @@ dist
 glance.egg-info
 tests.sqlite
 glance/versioninfo
+etc/glance-api.conf
 
 # Swap files range from .saa to .swp
 *.s[a-w][a-p]
