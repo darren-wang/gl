@@ -104,7 +104,8 @@ class ContextMiddleware(BaseContextMiddleware):
         # it into a list to be useful
         roles_header = req.headers.get('X-Roles', '')
         roles = [r.strip().lower() for r in roles_header.split(',')]
-
+        LOG.debug('\n####HERE IS THE HEADERS####\n')
+        LOG.debug(req.headers.__dict__)
         service_catalog = None
         if req.headers.get('X-Service-Catalog') is not None:
             try:
@@ -116,15 +117,22 @@ class ContextMiddleware(BaseContextMiddleware):
 
         kwargs = {
             'user': req.headers.get('X-User-Id'),
-            'tenant': req.headers.get('X-Tenant-Id'),
+            'tenant': req.headers.get('X-Project-Id'),
             'roles': roles,
             'is_admin': CONF.admin_role.strip().lower() in roles,
             'auth_token': req.headers.get('X-Auth-Token'),
             'owner_is_tenant': CONF.owner_is_tenant,
             'service_catalog': service_catalog,
             'policy_enforcer': self.policy_enforcer,
+            'user_domain': req.headers.get('X-User-Domain-Id')
         }
-
+        # (DWang) Assume Domain-scoped first
+        domain = req.headers.get('X-Domain-Id')
+        if not domain:
+        # (DWang) Project-scoped
+            domain = req.headers.get('X-Project-Domain-Id')
+        kwargs.update({'domain':domain})
+        
         return glance.context.RequestContext(**kwargs)
 
 

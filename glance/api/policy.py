@@ -66,9 +66,16 @@ class Enforcer(policy.Enforcer):
         """
         credentials = {
             'roles': context.roles,
-            'user': context.user,
-            'tenant': context.tenant,
+            'user_id': context.user,
+            'scope_project_id': context.tenant,
+            'scope_domain_id': context.domain,
+            'domain_id': context.user_domain,
         }
+        if context.tenant:
+            credentials['scope'] = 'project'
+        else:
+            credentials['scope'] = 'domain'
+        action = ('glance', action)
         return super(Enforcer, self).enforce(action, target, credentials,
                                              do_raise=True,
                                              exc=exception.Forbidden,
@@ -84,9 +91,16 @@ class Enforcer(policy.Enforcer):
         """
         credentials = {
             'roles': context.roles,
-            'user': context.user,
-            'tenant': context.tenant,
+            'user_id': context.user,
+            'scope_project_id': context.tenant,
+            'scope_domain_id': context.domain,
+            'domain_id': context.user_domain,
         }
+        if context.tenant:
+            credentials['scope'] = 'project'
+        else:
+            credentials['scope'] = 'domain'
+        action = ('glance', action)
         return super(Enforcer, self).enforce(action, target, credentials)
 
     def check_is_admin(self, context):
