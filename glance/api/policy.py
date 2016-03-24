@@ -48,10 +48,7 @@ class Enforcer(policy.Enforcer):
     """Responsible for loading and enforcing rules"""
 
     def __init__(self):
-        if CONF.find_file(CONF.oslo_policy.policy_file):
-            kwargs = dict(rules=None, use_conf=True)
-        else:
-            kwargs = dict(rules=DEFAULT_RULES, use_conf=False)
+        kwargs = dict(rules=DEFAULT_RULES, use_conf=False)
         super(Enforcer, self).__init__(CONF, overwrite=False, **kwargs)
 
     def add_rules(self, rules):
