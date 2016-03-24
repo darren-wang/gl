@@ -105,9 +105,6 @@ class ContextMiddleware(BaseContextMiddleware):
         roles_header = req.headers.get('X-Roles', '')
         roles = [r.strip().lower() for r in roles_header.split(',')]
 
-        # NOTE(bcwaldon): This header is deprecated in favor of X-Auth-Token
-        deprecated_token = req.headers.get('X-Storage-Token')
-
         service_catalog = None
         if req.headers.get('X-Service-Catalog') is not None:
             try:
