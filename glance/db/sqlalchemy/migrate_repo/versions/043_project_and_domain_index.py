@@ -26,10 +26,10 @@ def upgrade(migrate_engine):
     meta = sqlalchemy.MetaData()
     meta.bind = migrate_engine
 
-    index = Index(PROJECT_INDEX, images.c.project_id)
+    index = sqlalchemy.Index(PROJECT_INDEX, images.c.project_id)
     index.create(migrate_engine)
     
-    index = Index(DOMAIN_INDEX, images.c.domain_id)
+    index = sqlalchemy.Index(DOMAIN_INDEX, images.c.domain_id)
     index.create(migrate_engine)
 
 
@@ -39,8 +39,8 @@ def downgrade(migrate_engine):
 
     images = sqlalchemy.Table('images', meta, autoload=True)
 
-    index = Index(PROJECT_INDEX, images.c.project_id)
+    index = sqlalchemy.Index(PROJECT_INDEX, images.c.project_id)
     index.drop(migrate_engine)
 
-    index = Index(DOMAIN_INDEX, images.c.domain_id)
+    index = sqlalchemy.Index(DOMAIN_INDEX, images.c.domain_id)
     index.drop(migrate_engine)
