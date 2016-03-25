@@ -26,6 +26,8 @@ def upgrade(migrate_engine):
     meta = sqlalchemy.MetaData()
     meta.bind = migrate_engine
 
+    images = sqlalchemy.Table('images', meta, autoload=True)
+
     index = sqlalchemy.Index(PROJECT_INDEX, images.c.project_id)
     index.create(migrate_engine)
     
