@@ -18,18 +18,19 @@ import sqlalchemy
 # (DWang) This version is added to store project and domain info in images,
 # and now the 'owner' is specifically the user that created the image.
 
+PROJECT_INDEX = 'project_image_idx'
+DOMAIN_INDEX = 'domain_image_idx'
+
 
 def upgrade(migrate_engine):
     meta = sqlalchemy.MetaData()
     meta.bind = migrate_engine
 
-    images = sqlalchemy.Table('images', meta, autoload=True)
-    project_id = sqlalchemy.Column('project_id',
-                                     sqlalchemy.String(64))
-    domain_id = sqlalchemy.Column('domain_id',
-                                     sqlalchemy.String(64))
-    images.create_column(project_id)
-    images.create_column(domain_id)
+    index = Index(PROJECT_INDEX, images.c.project_id)
+    index.create(migrate_engine)
+    
+    index = Index(DOMAIN_INDEX, images.c.domain_id)
+    index.create(migrate_engine)
 
 
 def downgrade(migrate_engine):
@@ -38,5 +39,8 @@ def downgrade(migrate_engine):
 
     images = sqlalchemy.Table('images', meta, autoload=True)
 
-    images.columns['project_id'].drop()
-    images.columns['domain_id'].drop()
+    index = Index(PROJECT_INDEX, images.c.project_id)
+    index.drop(migrate_engine)
+
+    index = Index(DOMAIN_INDEX, images.c.domain_id)
+    index.drop(migrate_engine)
