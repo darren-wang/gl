@@ -27,7 +27,6 @@ from glance.common import location_strategy
 import glance.domain
 import glance.domain.proxy
 from glance import i18n
-from openstackclient.tests.identity.v3.fakes import domain_id
 
 _ = i18n._
 
