@@ -18,6 +18,7 @@
 
 from oslo_config import cfg
 from oslo_utils import importutils
+from oslo_log import log as logging
 from wsme.rest import json
 
 from glance.api.v2.model.metadef_property_type import PropertyType
@@ -27,6 +28,8 @@ from glance.common import location_strategy
 import glance.domain
 import glance.domain.proxy
 from glance import i18n
+
+LOG = logging.getLogger(__name__)
 
 _ = i18n._
 

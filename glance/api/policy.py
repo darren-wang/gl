@@ -44,6 +44,16 @@ _LW = i18n._LW
 
 policy.Enforcer(CONF)
 
+def _build_obj_dict(image):
+    d = {'obj.image.id': image['id'],
+         'obj.image.user_id': image['owner'],
+         'obj.image.domain_id': image['domain_id'],
+         'obj.image.project_id': image['project_id'],
+         'obj.image.visibility': image['visibility'],
+         'obj.image.protected': image['protected']}
+    return d
+
+
 class Enforcer(policy.Enforcer):
     """Responsible for loading and enforcing rules"""
 
@@ -80,11 +90,13 @@ class Enforcer(policy.Enforcer):
 
         extra = {'do_raise': True, 'exc': exception.Forbidden,
                 'service': action[0], 'permission': action[1]}
+        
+        obj = _build_obj_dict(target) 
 
-        rst =  super(Enforcer, self).enforce(action, target, credentials,
+        rst =  super(Enforcer, self).enforce(action, obj, credentials,
                                             'system', **extra)
         if rst:
-            return super(Enforcer, self).enforce(action, target, credentials,
+            return super(Enforcer, self).enforce(action, obj, credentials,
                                                 'domain', **extra)
 
     def check(self, context, action, target):
@@ -246,8 +258,6 @@ class ImageFactoryProxy(glance.domain.proxy.ImageFactory):
             self.policy.enforce(self.context, 'publicize_image', {})
         domain_id = self.context.domain
         project_id = self.context.tenant
-        LOG.debug('\n####THIS IS THE KWARGS IN NEW_IMAGE\n')
-        LOG.debug(kwargs)
         return super(ImageFactoryProxy, self).new_image(domain_id=domain_id,
                                             project_id=project_id, **kwargs)
 

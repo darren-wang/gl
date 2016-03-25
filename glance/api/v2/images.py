@@ -719,7 +719,7 @@ class ResponseSerializer(wsgi.JSONResponseSerializer):
             attributes = ['name', 'disk_format', 'container_format',
                           'visibility', 'size', 'virtual_size', 'status',
                           'checksum', 'protected', 'min_ram', 'min_disk',
-                          'owner']
+                          'owner', 'project_id', 'domain_id']
             for key in attributes:
                 image_view[key] = getattr(image, key)
             image_view['id'] = image.image_id
