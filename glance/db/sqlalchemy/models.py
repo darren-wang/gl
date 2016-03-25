@@ -116,8 +116,8 @@ class Image(BASE, GlanceBase):
                       Index('ix_images_is_public', 'is_public'),
                       Index('ix_images_deleted', 'deleted'),
                       Index('owner_image_idx', 'owner'),
-                      Index('project_image_idx', 'project'),
-                      Index('domain_image_idx', 'domain'),)
+                      Index('project_image_idx', 'project_id'),
+                      Index('domain_image_idx', 'domain_id'),)
 
     id = Column(String(36), primary_key=True,
                 default=lambda: str(uuid.uuid4()))
