@@ -128,6 +128,8 @@ class Image(object):
         self.locations = kwargs.pop('locations', [])
         self.checksum = kwargs.pop('checksum', None)
         self.owner = kwargs.pop('owner', None)
+        self.project_id = kwargs.pop('project_id', None)
+        self.domain_id = kwargs.pop('domain_id', None)
         self._disk_format = kwargs.pop('disk_format', None)
         self._container_format = kwargs.pop('container_format', None)
         self.size = kwargs.pop('size', None)

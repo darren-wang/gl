@@ -155,6 +155,10 @@ class ImageRepoProxy(glance.domain.proxy.Repo):
         return super(ImageRepoProxy, self).save(image, from_state=from_state)
 
     def add(self, image):
+        LOG.debug('\n####This is the CONTEXT PASSED TO IMAGE CREATE####')
+        LOG.debug(self.context)
+        LOG.debug('\n####This is the TARGET PASSED TO IMAGE CREATE####')
+        LOG.debug(image.target)
         self.policy.enforce(self.context, 'add_image', image.target)
         return super(ImageRepoProxy, self).add(image)
 

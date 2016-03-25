@@ -115,7 +115,9 @@ class Image(BASE, GlanceBase):
     __table_args__ = (Index('checksum_image_idx', 'checksum'),
                       Index('ix_images_is_public', 'is_public'),
                       Index('ix_images_deleted', 'deleted'),
-                      Index('owner_image_idx', 'owner'),)
+                      Index('owner_image_idx', 'owner'),
+                      Index('project_image_idx', 'project'),
+                      Index('domain_image_idx', 'domain'),)
 
     id = Column(String(36), primary_key=True,
                 default=lambda: str(uuid.uuid4()))
@@ -130,6 +132,8 @@ class Image(BASE, GlanceBase):
     min_disk = Column(Integer, nullable=False, default=0)
     min_ram = Column(Integer, nullable=False, default=0)
     owner = Column(String(255))
+    project_id = Column(String(64))
+    domain_id = Column(String(64))
     protected = Column(Boolean, nullable=False, default=False,
                        server_default=sql.expression.false())
 

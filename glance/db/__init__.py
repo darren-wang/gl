@@ -27,6 +27,7 @@ from glance.common import location_strategy
 import glance.domain
 import glance.domain.proxy
 from glance import i18n
+from openstackclient.tests.identity.v3.fakes import domain_id
 
 _ = i18n._
 
@@ -55,7 +56,7 @@ IMAGE_ATTRS = BASE_MODEL_ATTRS | set(['name', 'status', 'size', 'virtual_size',
                                       'disk_format', 'container_format',
                                       'min_disk', 'min_ram', 'is_public',
                                       'locations', 'checksum', 'owner',
-                                      'protected'])
+                                      'protected', 'project_id', 'domain_id'])
 
 
 class ImageRepo(object):
@@ -116,6 +117,8 @@ class ImageRepo(object):
             locations=location_strategy.get_ordered_locations(locations),
             checksum=db_image['checksum'],
             owner=db_image['owner'],
+            project_id=db_image['project_id'],
+            domain_id=db_image['domain_id'],
             disk_format=db_image['disk_format'],
             container_format=db_image['container_format'],
             size=db_image['size'],
@@ -147,6 +150,8 @@ class ImageRepo(object):
             'locations': locations,
             'checksum': image.checksum,
             'owner': image.owner,
+            'project_id': image.project_id,
+            'domain_id': image.domain_id,
             'disk_format': image.disk_format,
             'container_format': image.container_format,
             'size': image.size,
