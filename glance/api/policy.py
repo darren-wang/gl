@@ -75,11 +75,17 @@ class Enforcer(policy.Enforcer):
             credentials['scope'] = 'project'
         else:
             credentials['scope'] = 'domain'
+        
         action = ('glance', action)
-        return super(Enforcer, self).enforce(action, target, credentials,
-                                             do_raise=True,
-                                             exc=exception.Forbidden,
-                                             action=action)
+
+        extra = {'do_raise': True, 'exc': exception.Forbidden,
+                'service': action[0], 'permission': action[1]}
+
+        rst =  super(Enforcer, self).enforce(action, target, credentials,
+                                            'system', **extra)
+        if rst:
+            return super(Enforcer, self).enforce(action, target, credentials,
+                                                'domain', **extra)
 
     def check(self, context, action, target):
         """Verifies that the action is valid on the target in this context.
@@ -100,8 +106,14 @@ class Enforcer(policy.Enforcer):
             credentials['scope'] = 'project'
         else:
             credentials['scope'] = 'domain'
+        
         action = ('glance', action)
-        return super(Enforcer, self).enforce(action, target, credentials)
+
+        rst =  super(Enforcer, self).enforce(action, target, credentials,
+                                            'system')
+        if rst:
+            return super(Enforcer, self).enforce(action, target, credentials,
+                                                'domain')
 
     def check_is_admin(self, context):
         """Check if the given context is associated with an admin role,

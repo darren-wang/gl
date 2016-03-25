@@ -26,7 +26,7 @@ from glance import i18n
 _ = i18n._
 
 context_opts = [
-    cfg.BoolOpt('owner_is_tenant', default=True,
+    cfg.BoolOpt('owner_is_tenant', default=False,
                 help=_('When true, this option sets the owner of an image '
                        'to be the tenant. Otherwise, the owner of the '
                        ' image will be the authenticated user issuing the '
@@ -104,8 +104,6 @@ class ContextMiddleware(BaseContextMiddleware):
         # it into a list to be useful
         roles_header = req.headers.get('X-Roles', '')
         roles = [r.strip().lower() for r in roles_header.split(',')]
-        LOG.debug('\n####HERE IS THE HEADERS####\n')
-        LOG.debug(req.headers.__dict__)
         service_catalog = None
         if req.headers.get('X-Service-Catalog') is not None:
             try:
