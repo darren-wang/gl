@@ -128,6 +128,8 @@ def format_image_notification(image):
         'tags': list(image.tags),
         'deleted': False,
         'deleted_at': None,
+        'domain_id': image.domain_id,
+        'project_id': image.project_id
     }
 
 
