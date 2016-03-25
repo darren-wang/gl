@@ -152,6 +152,8 @@ class Image(object):
     virtual_size = _proxy('base', 'virtual_size')
     extra_properties = _proxy('base', 'extra_properties')
     tags = _proxy('base', 'tags')
+    project_id = _proxy('base', 'project_id')
+    domain_id = _proxy('base', 'domain_id')
 
     def delete(self):
         self.base.delete()

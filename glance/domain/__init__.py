@@ -55,7 +55,7 @@ class ImageFactory(object):
                             'size', 'virtual_size']
     _reserved_properties = ['owner', 'is_public', 'locations',
                             'deleted', 'deleted_at', 'direct_url', 'self',
-                            'file', 'schema']
+                            'file', 'schema', 'domain_id', 'project_id']
 
     def _check_readonly(self, kwargs):
         for key in self._readonly_properties:
@@ -76,7 +76,8 @@ class ImageFactory(object):
     def new_image(self, image_id=None, name=None, visibility='private',
                   min_disk=0, min_ram=0, protected=False, owner=None,
                   disk_format=None, container_format=None,
-                  extra_properties=None, tags=None, **other_args):
+                  extra_properties=None, tags=None, domain_id=None,
+                  project_id=None, **other_args):
         extra_properties = extra_properties or {}
         self._check_readonly(other_args)
         self._check_unexpected(other_args)
@@ -92,8 +93,8 @@ class ImageFactory(object):
                      created_at=created_at, updated_at=updated_at,
                      visibility=visibility, min_disk=min_disk,
                      min_ram=min_ram, protected=protected,
-                     owner=owner, disk_format=disk_format,
-                     container_format=container_format,
+                     owner=owner, disk_format=disk_format, domain_id=domain_id,
+                     container_format=container_format, project_id=project_id,
                      extra_properties=extra_properties, tags=tags or [])
 
 

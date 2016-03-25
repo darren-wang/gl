@@ -244,7 +244,12 @@ class ImageFactoryProxy(glance.domain.proxy.ImageFactory):
     def new_image(self, **kwargs):
         if kwargs.get('visibility') == 'public':
             self.policy.enforce(self.context, 'publicize_image', {})
-        return super(ImageFactoryProxy, self).new_image(**kwargs)
+        domain_id = self.context.domain
+        project_id = self.context.tenant
+        LOG.debug('\n####THIS IS THE KWARGS IN NEW_IMAGE\n')
+        LOG.debug(kwargs)
+        return super(ImageFactoryProxy, self).new_image(domain_id=domain_id,
+                                            project_id=project_id, **kwargs)
 
 
 class ImageMemberFactoryProxy(glance.domain.proxy.ImageMembershipFactory):
