@@ -44,8 +44,12 @@ _LW = i18n._LW
 
 policy.Enforcer(CONF)
 
-def _build_obj_dict(image):
-    d = {'obj.image.id': image['id'],
+def _build_target_dict(image):
+    """
+    @param image: type ImageTarget
+    @return: dict
+    """
+    d = {'obj.image.id': image['image_id'],
          'obj.image.user_id': image['owner'],
          'obj.image.domain_id': image['domain_id'],
          'obj.image.project_id': image['project_id'],
@@ -91,12 +95,11 @@ class Enforcer(policy.Enforcer):
         extra = {'do_raise': True, 'exc': exception.Forbidden,
                 'service': action[0], 'permission': action[1]}
         
-        obj = _build_obj_dict(target) 
 
-        rst =  super(Enforcer, self).enforce(action, obj, credentials,
+        rst =  super(Enforcer, self).enforce(action, target, credentials,
                                             'system', **extra)
         if rst:
-            return super(Enforcer, self).enforce(action, obj, credentials,
+            return super(Enforcer, self).enforce(action, target, credentials,
                                                 'domain', **extra)
 
     def check(self, context, action, target):
@@ -155,22 +158,24 @@ class ImageRepoProxy(glance.domain.proxy.Repo):
             self.policy.enforce(self.context, 'get_image', {})
             raise
         else:
-            self.policy.enforce(self.context, 'get_image', ImageTarget(image))
+            target = _build_target_dict(ImageTarget(image)) 
+            self.policy.enforce(self.context, 'get_image', target)
         return image
 
     def list(self, *args, **kwargs):
-        self.policy.enforce(self.context, 'get_images', {})
+        qStr = {}
+        for (k, v) in kwargs['filters'].iteritems():
+            qStr['qStr.'+str(k)] = v
+
+        self.policy.enforce(self.context, 'get_images', qStr)
         return super(ImageRepoProxy, self).list(*args, **kwargs)
 
     def save(self, image, from_state=None):
-        self.policy.enforce(self.context, 'modify_image', image.target)
+        target = _build_target_dict(image.target)
+        self.policy.enforce(self.context, 'modify_image', target)
         return super(ImageRepoProxy, self).save(image, from_state=from_state)
 
     def add(self, image):
-        LOG.debug('\n####This is the CONTEXT PASSED TO IMAGE CREATE####')
-        LOG.debug(self.context)
-        LOG.debug('\n####This is the TARGET PASSED TO IMAGE CREATE####')
-        LOG.debug(image.target)
         self.policy.enforce(self.context, 'add_image', image.target)
         return super(ImageRepoProxy, self).add(image)
 
@@ -212,7 +217,8 @@ class ImageProxy(glance.domain.proxy.Image):
         self.image.locations = new_locations
 
     def delete(self):
-        self.policy.enforce(self.context, 'delete_image', self.target)
+        target = _build_target_dict(self.target)
+        self.policy.enforce(self.context, 'delete_image', target)
         return self.image.delete()
 
     def deactivate(self):
@@ -230,11 +236,13 @@ class ImageProxy(glance.domain.proxy.Image):
         self.image.reactivate()
 
     def get_data(self, *args, **kwargs):
-        self.policy.enforce(self.context, 'download_image', self.target)
+        target = _build_target_dict(self.target)
+        self.policy.enforce(self.context, 'download_image', target)
         return self.image.get_data(*args, **kwargs)
 
     def set_data(self, *args, **kwargs):
-        self.policy.enforce(self.context, 'upload_image', self.target)
+        target = _build_target_dict(self.target)
+        self.policy.enforce(self.context, 'upload_image', target)
         return self.image.set_data(*args, **kwargs)
 
     def get_member_repo(self, **kwargs):
