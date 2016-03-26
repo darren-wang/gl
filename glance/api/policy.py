@@ -78,6 +78,10 @@ class Enforcer(policy.Enforcer):
            :raises: `glance.common.exception.Forbidden`
            :returns: A non-False value if access is allowed.
         """
+        if context.is_admin:
+            LOG.warning('Cloud Root User. Bypassing Authorization.')
+            return None
+
         credentials = {
             'roles': context.roles,
             'user_id': context.user,
@@ -94,13 +98,13 @@ class Enforcer(policy.Enforcer):
 
         extra = {'do_raise': True, 'exc': exception.Forbidden,
                 'service': action[0], 'permission': action[1]}
-        
 
-        rst =  super(Enforcer, self).enforce(action, target, credentials,
-                                            'system', **extra)
-        if rst:
-            return super(Enforcer, self).enforce(action, target, credentials,
-                                                'domain', **extra)
+        LOG.debug('Evaluating against System Authz Policy')
+        super(Enforcer, self).enforce(action, target, credentials,
+                                             'system', **extra)
+        LOG.debug('Evaluating against Domain Authz Policy')
+        super(Enforcer, self).enforce(action, target, credentials,
+                                             'domain', **extra)
 
     def check(self, context, action, target):
         """Verifies that the action is valid on the target in this context.
@@ -110,7 +114,7 @@ class Enforcer(policy.Enforcer):
            :param target: Dictionary representing the object of the action.
            :returns: A non-False value if access is allowed.
         """
-        credentials = {
+        creds = {
             'roles': context.roles,
             'user_id': context.user,
             'scope_project_id': context.tenant,
@@ -118,17 +122,19 @@ class Enforcer(policy.Enforcer):
             'domain_id': context.user_domain,
         }
         if context.tenant:
-            credentials['scope'] = 'project'
+            creds['scope'] = 'project'
         else:
-            credentials['scope'] = 'domain'
-        
+            creds['scope'] = 'domain'
+
         action = ('glance', action)
 
-        rst =  super(Enforcer, self).enforce(action, target, credentials,
-                                            'system')
+        LOG.debug('Evaluating against System Authz Policy')
+        rst =  super(Enforcer, self).enforce(action, target, creds, 'system')
         if rst:
-            return super(Enforcer, self).enforce(action, target, credentials,
-                                                'domain')
+            LOG.debug('Evaluating against Domain Authz Policy')
+            rst = super(Enforcer, self).enforce(action, target, creds,
+                                                                    'domain')
+        return rst
 
     def check_is_admin(self, context):
         """Check if the given context is associated with an admin role,

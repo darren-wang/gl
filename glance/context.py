@@ -16,7 +16,9 @@
 from oslo_context import context
 
 from glance.api import policy
+from oslo_log import log as logging
 
+LOG = logging.getLogger(__name__)
 
 class RequestContext(context.RequestContext):
     """Stores information about the security context.
@@ -34,6 +36,8 @@ class RequestContext(context.RequestContext):
         self.owner_is_tenant = owner_is_tenant
         self.service_catalog = service_catalog
         self.policy_enforcer = policy_enforcer or policy.Enforcer()
+        LOG.debug('\n####this is the is_admin in RequestContext####\n')
+        LOG.debug(self.is_admin)
         if not self.is_admin:
             self.is_admin = self.policy_enforcer.check_is_admin(self)
 

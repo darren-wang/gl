@@ -130,7 +130,6 @@ class ContextMiddleware(BaseContextMiddleware):
         # (DWang) Project-scoped
             domain = req.headers.get('X-Project-Domain-Id')
         kwargs.update({'domain':domain})
-        
         return glance.context.RequestContext(**kwargs)
 
 
