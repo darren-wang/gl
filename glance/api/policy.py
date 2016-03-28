@@ -99,12 +99,7 @@ class Enforcer(policy.Enforcer):
         extra = {'do_raise': True, 'exc': exception.Forbidden,
                 'service': action[0], 'permission': action[1]}
 
-        LOG.debug('Evaluating against System Authz Policy')
-        super(Enforcer, self).enforce(action, target, credentials,
-                                             'system', **extra)
-        LOG.debug('Evaluating against Domain Authz Policy')
-        super(Enforcer, self).enforce(action, target, credentials,
-                                             'domain', **extra)
+        super(Enforcer, self).enforce(action, target, credentials, **extra)
 
     def check(self, context, action, target):
         """Verifies that the action is valid on the target in this context.
@@ -128,13 +123,7 @@ class Enforcer(policy.Enforcer):
 
         action = ('glance', action)
 
-        LOG.debug('Evaluating against System Authz Policy')
-        rst =  super(Enforcer, self).enforce(action, target, creds, 'system')
-        if rst:
-            LOG.debug('Evaluating against Domain Authz Policy')
-            rst = super(Enforcer, self).enforce(action, target, creds,
-                                                                    'domain')
-        return rst
+        return super(Enforcer, self).enforce(action, target, creds)
 
     def check_is_admin(self, context):
         """Check if the given context is associated with an admin role,
