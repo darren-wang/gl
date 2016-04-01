@@ -313,6 +313,8 @@ class ImmutableImageProxy(object):
     extra_properties = _immutable_attr('base', 'extra_properties',
                                        proxy=ImmutableProperties)
     tags = _immutable_attr('base', 'tags', proxy=ImmutableTags)
+    project_id = _immutable_attr('base', 'project_id')
+    domain_id = _immutable_attr('base', 'domain_id')
 
     def delete(self):
         message = _("You are not permitted to delete this image.")
