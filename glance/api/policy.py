@@ -31,10 +31,8 @@ LOG = logging.getLogger(__name__)
 CONF = cfg.CONF
 
 DEFAULT_RULES = policy.Rules.from_dict({
-    'glanec':{
-        'context_is_admin': 'role:project_admin',
-        'default': '@',
-        'manage_image_cache': 'role:project_admin',
+    'glance':{
+        'default': '!'
     }
 })
 
@@ -132,7 +130,7 @@ class Enforcer(policy.Enforcer):
            :param context: Glance request context
            :returns: A non-False value if context role is admin.
         """
-        return self.check(context, 'context_is_admin', context.to_dict())
+        return self.check(context, 'cru_check', context.to_dict())
 
 
 class ImageRepoProxy(glance.domain.proxy.Repo):
